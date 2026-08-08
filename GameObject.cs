@@ -7,30 +7,45 @@ namespace inpsGE
     public class GameObject
     {
         Texture2D Image;
-        public float PositionX, PositionY;
-        public Rectangle SolidBody;
-        public bool IsSolid;
-        int LightLevel = 0;
+        float PositionX, PositionY;
+        Rectangle Bounds;
+        bool IsObjectSolid;
         Action Event;
-        public bool IsPlayerNear { get; set; }
+        int LightLevel = 0;
+        bool IsPlayerNearMe = false;
 
-        public GameObject(float PositionX, float PositionY, Texture2D Image, bool IsSolid)
+        public GameObject(Texture2D Image, float PositionX, float PositionY, bool IsObjectSolid)
         {
+            this.Image = Image;
             this.PositionX = PositionX;
             this.PositionY = PositionY;
-            SolidBody = new Rectangle((int)Math.Round(PositionX), (int)Math.Round(PositionY), Core.TILE_SIZE, Core.TILE_SIZE);
-            this.Image = Image;
-            this.IsSolid = IsSolid;
+            Bounds = new Rectangle((int)Math.Round(PositionX), (int)Math.Round(PositionY), Core.TILE_SIZE, Core.TILE_SIZE);
+            this.IsObjectSolid = IsObjectSolid;
         }
 
-        public void SetLightLevel(int LightLevel)
+        public Texture2D GetImage()
         {
-            this.LightLevel = LightLevel;
+            return Image;
         }
 
-        public int GetLightLevel()
+        public float GetPositionX()
         {
-            return LightLevel;
+            return PositionX;
+        }
+
+        public float GetPositionY()
+        {
+            return PositionY;
+        }
+
+        public Rectangle GetBounds()
+        {
+            return Bounds;
+        }
+
+        public bool IsSolid()
+        {
+            return IsObjectSolid;
         }
 
         public void SetEvent(Action Event)
@@ -43,9 +58,29 @@ namespace inpsGE
             Event?.Invoke();
         }
 
-        public Texture2D GetImage()
+        public void SetLightLevel(int LightLevel)
         {
-            return Image;
+            this.LightLevel = LightLevel;
+        }
+
+        public int GetLightLevel()
+        {
+            return LightLevel;
+        }
+
+        public void ResetPlayerProximity()
+        {
+            IsPlayerNearMe = false;
+        }
+
+        public void PlayerIsNear()
+        {
+            IsPlayerNearMe = true;
+        }
+
+        public bool IsInteractionTooltipVisible()
+        {
+            return IsPlayerNearMe;
         }
     }
 }

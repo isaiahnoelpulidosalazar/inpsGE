@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -6,34 +7,50 @@ namespace inpsGE
 {
     public class Entity
     {
-        public float Speed, PositionX = 0f, PositionY = 0f;
-        public Rectangle SolidBody, TriggerArea;
+        Texture2D Image;
+        public float PositionX, PositionY, Speed;
+        public Rectangle Bounds, InteractionArea;
         public bool Up, Down, Left, Right;
 
-        public void CheckCollision(Entity Entity, List<GameTile> Tiles)
+        public void SetImage(Texture2D Image)
+        {
+            this.Image = Image;
+        }
+
+        public void SetImage(string FilePath)
+        {
+            Image = Texture2D.FromFile(Core.GetGraphicsDevice(), FilePath);
+        }
+
+        public Texture2D GetImage()
+        {
+            return Image;
+        }
+
+        public void CheckTileCollision(Entity Entity, List<GameTile> Tiles)
         {
             foreach (GameTile Tile in Tiles)
             {
-                Rectangle tempUP = new Rectangle(Entity.SolidBody.X, (int)Math.Ceiling(Entity.SolidBody.Y - Entity.Speed), Entity.SolidBody.Width, Entity.SolidBody.Height);
-                Rectangle tempDOWN = new Rectangle(Entity.SolidBody.X, (int)Math.Ceiling(Entity.SolidBody.Y + Entity.Speed), Entity.SolidBody.Width, Entity.SolidBody.Height);
-                Rectangle tempLEFT = new Rectangle((int)Math.Ceiling(Entity.SolidBody.X - Entity.Speed), Entity.SolidBody.Y, Entity.SolidBody.Width, Entity.SolidBody.Height);
-                Rectangle tempRIGHT = new Rectangle((int)Math.Ceiling(Entity.SolidBody.X + Entity.Speed), Entity.SolidBody.Y, Entity.SolidBody.Width, Entity.SolidBody.Height);
+                Rectangle CalculateUp = new Rectangle(Entity.Bounds.X, (int)Math.Ceiling(Entity.Bounds.Y - Entity.Speed), Entity.Bounds.Width, Entity.Bounds.Height);
+                Rectangle CalculateDown = new Rectangle(Entity.Bounds.X, (int)Math.Ceiling(Entity.Bounds.Y + Entity.Speed), Entity.Bounds.Width, Entity.Bounds.Height);
+                Rectangle CalculateLeft = new Rectangle((int)Math.Ceiling(Entity.Bounds.X - Entity.Speed), Entity.Bounds.Y, Entity.Bounds.Width, Entity.Bounds.Height);
+                Rectangle CalculateRight = new Rectangle((int)Math.Ceiling(Entity.Bounds.X + Entity.Speed), Entity.Bounds.Y, Entity.Bounds.Width, Entity.Bounds.Height);
 
-                if (Tile.IsSolid)
+                if (Tile.IsSolid())
                 {
-                    if (tempUP.Intersects(Tile.SolidBody))
+                    if (CalculateUp.Intersects(Tile.GetBounds()))
                     {
                         Up = false;
                     }
-                    if (tempDOWN.Intersects(Tile.SolidBody))
+                    if (CalculateDown.Intersects(Tile.GetBounds()))
                     {
                         Down = false;
                     }
-                    if (tempLEFT.Intersects(Tile.SolidBody))
+                    if (CalculateLeft.Intersects(Tile.GetBounds()))
                     {
                         Left = false;
                     }
-                    if (tempRIGHT.Intersects(Tile.SolidBody))
+                    if (CalculateRight.Intersects(Tile.GetBounds()))
                     {
                         Right = false;
                     }
@@ -45,26 +62,26 @@ namespace inpsGE
         {
             foreach (GameObject Object in Objects)
             {
-                Rectangle tempUP = new Rectangle(Entity.SolidBody.X, (int)Math.Ceiling(Entity.SolidBody.Y - Entity.Speed), Entity.SolidBody.Width, Entity.SolidBody.Height);
-                Rectangle tempDOWN = new Rectangle(Entity.SolidBody.X, (int)Math.Ceiling(Entity.SolidBody.Y + Entity.Speed), Entity.SolidBody.Width, Entity.SolidBody.Height);
-                Rectangle tempLEFT = new Rectangle((int)Math.Ceiling(Entity.SolidBody.X - Entity.Speed), Entity.SolidBody.Y, Entity.SolidBody.Width, Entity.SolidBody.Height);
-                Rectangle tempRIGHT = new Rectangle((int)Math.Ceiling(Entity.SolidBody.X + Entity.Speed), Entity.SolidBody.Y, Entity.SolidBody.Width, Entity.SolidBody.Height);
+                Rectangle CalculateUp = new Rectangle(Entity.Bounds.X, (int)Math.Ceiling(Entity.Bounds.Y - Entity.Speed), Entity.Bounds.Width, Entity.Bounds.Height);
+                Rectangle CalculateDown = new Rectangle(Entity.Bounds.X, (int)Math.Ceiling(Entity.Bounds.Y + Entity.Speed), Entity.Bounds.Width, Entity.Bounds.Height);
+                Rectangle CalculateLeft = new Rectangle((int)Math.Ceiling(Entity.Bounds.X - Entity.Speed), Entity.Bounds.Y, Entity.Bounds.Width, Entity.Bounds.Height);
+                Rectangle CalculateRight = new Rectangle((int)Math.Ceiling(Entity.Bounds.X + Entity.Speed), Entity.Bounds.Y, Entity.Bounds.Width, Entity.Bounds.Height);
 
-                if (Object.IsSolid)
+                if (Object.IsSolid())
                 {
-                    if (tempUP.Intersects(Object.SolidBody))
+                    if (CalculateUp.Intersects(Object.GetBounds()))
                     {
                         Up = false;
                     }
-                    if (tempDOWN.Intersects(Object.SolidBody))
+                    if (CalculateDown.Intersects(Object.GetBounds()))
                     {
                         Down = false;
                     }
-                    if (tempLEFT.Intersects(Object.SolidBody))
+                    if (CalculateLeft.Intersects(Object.GetBounds()))
                     {
                         Left = false;
                     }
-                    if (tempRIGHT.Intersects(Object.SolidBody))
+                    if (CalculateRight.Intersects(Object.GetBounds()))
                     {
                         Right = false;
                     }
@@ -76,13 +93,14 @@ namespace inpsGE
         {
             foreach (GameObject Object in Objects)
             {
-                Object.IsPlayerNear = false;
+                Object.ResetPlayerProximity();
             }
+
             foreach (GameObject Object in Objects)
             {
-                if (Entity.TriggerArea.Intersects(Object.SolidBody))
+                if (Entity.InteractionArea.Intersects(Object.GetBounds()))
                 {
-                    Object.IsPlayerNear = true;
+                    Object.PlayerIsNear();
                     return Object;
                 }
             }

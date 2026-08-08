@@ -20,12 +20,12 @@ namespace inpsGE
 
             foreach (GameObject Object in Core.GetCurrentGameMap().GetObjects())
             {
-                if (Object.IsPlayerNear)
+                if (Object.IsInteractionTooltipVisible())
                 {
-                    Vector2 FontRectangle = Content.Load<SpriteFont>("DefaultFont").MeasureString("[E] to interact");
+                    Vector2 FontRectangle = Content.Load<SpriteFont>("DefaultFont_Text").MeasureString("[E] to interact");
                     Rectangle Bounds = new Rectangle(
-                        (int)(Object.SolidBody.X + (Core.TILE_SIZE / 2) - (FontRectangle.X / 2)),
-                        Object.SolidBody.Y - (Core.TILE_SIZE / 2),
+                        (int)(Object.GetBounds().X + (Core.TILE_SIZE / 2) - (FontRectangle.X / 2)),
+                        Object.GetBounds().Y - (Core.TILE_SIZE / 2),
                         (int)FontRectangle.X + 3,
                         (int)FontRectangle.Y
                     );
@@ -36,8 +36,8 @@ namespace inpsGE
                 {
                     int LightRadius = Object.GetLightLevel() * Core.TILE_SIZE * 2;
                     Rectangle LightRect = new Rectangle(
-                        (int)Object.PositionX - (LightRadius / 2) + (Core.TILE_SIZE / 2),
-                        (int)Object.PositionY - (LightRadius / 2) + (Core.TILE_SIZE / 2),
+                        (int)Object.GetPositionX() - (LightRadius / 2) + (Core.TILE_SIZE / 2),
+                        (int)Object.GetPositionY() - (LightRadius / 2) + (Core.TILE_SIZE / 2),
                         LightRadius,
                         LightRadius
                     );

@@ -109,14 +109,14 @@ namespace inpsGE
         {
             for (int a = 0; a < CurrentGameMap.GetTiles().Count; a++)
             {
-                GameTile temp = CurrentGameMap.GetTiles()[a];
-                _spriteBatch.Draw(temp.GetImage(), new Vector2(temp.PositionX, temp.PositionY), Color.White);
+                GameTile Tile = CurrentGameMap.GetTiles()[a];
+                _spriteBatch.Draw(Tile.GetImage(), new Vector2(Tile.GetPositionX(), Tile.GetPositionY()), Color.White);
             }
 
             for (int a = 0; a < CurrentGameMap.GetObjects().Count; a++)
             {
-                GameObject temp = CurrentGameMap.GetObjects()[a];
-                _spriteBatch.Draw(temp.GetImage(), new Vector2(temp.PositionX, temp.PositionY), Color.White);
+                GameObject Object = CurrentGameMap.GetObjects()[a];
+                _spriteBatch.Draw(Object.GetImage(), new Vector2(Object.GetPositionX(), Object.GetPositionY()), Color.White);
             }
         }
 
@@ -159,7 +159,6 @@ namespace inpsGE
 
         public static void SetGameObjectLightLevel(int Index, int LightLevel)
         {
-            Debug.WriteLine(CurrentGameMap.GetObjects());
             CurrentGameMap.GetObjects()[Index].SetLightLevel(LightLevel);
         }
 

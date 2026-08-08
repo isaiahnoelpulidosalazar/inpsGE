@@ -33,7 +33,7 @@ namespace inpsGE
                     int Index = Convert.ToInt32(temp[b]) - 1;
                     if (Index >= 0)
                     {
-                        Tiles.Add(new GameTile(Core.TILE_SIZE * b, Core.TILE_SIZE * a, Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Tiles\\" + (TileImages[Index].Contains("!") ? TileImages[Index].Substring(0, TileImages[Index].Length - 1) : TileImages[Index]) + ".png"), TileImages[Index].Contains("!")));
+                        Tiles.Add(new GameTile(Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Tiles\\" + (TileImages[Index].Contains("!") ? TileImages[Index].Substring(0, TileImages[Index].Length - 1) : TileImages[Index]) + ".png"), Core.TILE_SIZE * b, Core.TILE_SIZE * a, TileImages[Index].Contains("!")));
                     }
                 }
             }
@@ -45,7 +45,7 @@ namespace inpsGE
                     int Index = Convert.ToInt32(temp[b]) - 1;
                     if (Index >= 0)
                     {
-                        Objects.Add(new GameObject(Core.TILE_SIZE * b, Core.TILE_SIZE * a, Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"), ObjectImages[Index].Contains("!")));
+                        Objects.Add(new GameObject(Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"), Core.TILE_SIZE * b, Core.TILE_SIZE * a, ObjectImages[Index].Contains("!")));
                     }
                 }
             }

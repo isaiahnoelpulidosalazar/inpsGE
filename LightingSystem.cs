@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace inpsGE
 {
@@ -23,7 +18,7 @@ namespace inpsGE
 
             _spriteBatch.Begin(transformMatrix: Camera.GetCameraMatrix(), blendState: Core.GetLightCutoutBlend());
 
-            foreach (GameObject Object in Core.GetGameMapManager().GetCurrentGameMap().GetObjects())
+            foreach (GameObject Object in Core.GetCurrentGameMap().GetObjects())
             {
                 if (Object.IsPlayerNear)
                 {

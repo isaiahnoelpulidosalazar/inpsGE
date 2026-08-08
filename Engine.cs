@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,23 +37,28 @@ namespace inpsGE
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            DirectoryInfo DirectoryInfo = new DirectoryInfo("Content\\Scenarios");
+            DirectoryInfo MapDirectoryInfo = new DirectoryInfo("Content\\Maps");
+            DirectoryInfo ScenarioDirectoryInfo = new DirectoryInfo("Content\\Scenarios");
 
-            foreach (FileInfo File in DirectoryInfo.GetFiles("*.cs"))
+            foreach (FileInfo File in MapDirectoryInfo.GetFiles("*.igemap"))
+            {
+                Core.AddMap(new GameMap(Path.GetFileNameWithoutExtension(File.Name)));
+            }
+
+            foreach (FileInfo File in ScenarioDirectoryInfo.GetFiles("*.cs"))
             {
                 Assembly CompiledAssembly = Compiler.Run("Content\\Scenarios\\" + File.Name);
-                Type ScenarioType = CompiledAssembly.GetTypes()
-                    .FirstOrDefault(t => typeof(GameScenario).IsAssignableFrom(t)
-                      && !t.IsAbstract
-                      && t.IsClass);
+                Type ScenarioType = CompiledAssembly.GetTypes().FirstOrDefault(Type => typeof(GameScenario).IsAssignableFrom(Type) && !Type.IsAbstract && Type.IsClass);
 
                 if (ScenarioType != null)
                 {
-                    Core.GetGameScenarioManager().AddScenario((GameScenario)Activator.CreateInstance(ScenarioType));
+                    GameScenario Scenario = (GameScenario)Activator.CreateInstance(ScenarioType);
+                    Scenario.SetName(Path.GetFileNameWithoutExtension(File.Name));
+                    Core.AddScenario(Scenario);
                 }
             }
 
-            Core.GetGameScenarioManager().ChangeScenario("MainMenu");
+            Core.ChangeGameScenario("MainMenu");
         }
 
         protected override void Update(GameTime gameTime)
@@ -64,7 +70,7 @@ namespace inpsGE
 
             Input.Update();
 
-            Core.GetGameScenarioManager().Update(gameTime);
+            Core.GetCurrentGameScenario().Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -75,7 +81,7 @@ namespace inpsGE
 
             _spriteBatch.Begin();
 
-            Core.GetGameScenarioManager().Draw(Content, _spriteBatch);
+            Core.GetCurrentGameScenario().Draw(Content, _spriteBatch);
 
             if (LightingSystem.IsLightingSystemEnabled())
             {

@@ -3,9 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace inpsGE
 {
@@ -15,11 +13,8 @@ namespace inpsGE
         public const int TILE_SIZE = 48, VERY_SHORT = 5, SHORT = 15, MEDIUM = 30, LONG = 75;
 
         static GraphicsDevice GraphicsDevice;
-        static GameScenarioManager GameScenarioManager;
-        static GameMapManager GameMapManager;
 
         static Texture2D MessageBackground;
-        static Texture2D Darkness;
         static Texture2D WhiteTexture;
         static RenderTarget2D LightMask;
 
@@ -31,20 +26,28 @@ namespace inpsGE
             AlphaDestinationBlend = Blend.InverseSourceAlpha
         };
 
-        public static void Initialize(GraphicsDevice _graphicsDevice)
+        static List<GameMap> Maps = new List<GameMap>();
+        static List<GameScenario> Scenarios = new List<GameScenario>();
+        static GameMap CurrentGameMap;
+        static GameScenario CurrentGameScenario;
+
+        public static void Initialize(GraphicsDevice graphicsDevice)
         {
+            var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
+
+            if (EngineCheck != typeof(Engine))
+            {
+                throw new InvalidOperationException("The Core.Initialize() method can only be called from the Engine class.");
+            }
+
             SCREEN_WIDTH = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             SCREEN_HEIGHT = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
-            GraphicsDevice = _graphicsDevice;
-            GameScenarioManager = new GameScenarioManager();
-            GameMapManager = new GameMapManager();
+            GraphicsDevice = graphicsDevice;
 
             MessageBackground = new Texture2D(GraphicsDevice, 1, 1);
-            Darkness = new Texture2D(GraphicsDevice, 1, 1);
             WhiteTexture = new Texture2D(GraphicsDevice, 1, 1);
             MessageBackground.SetData(new[] { Color.Black });
-            Darkness.SetData([new Color(0, 0, 0, 150)]);
             WhiteTexture.SetData(new[] { Color.White });
 
             LightMask = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -63,16 +66,6 @@ namespace inpsGE
         public static GraphicsDevice GetGraphicsDevice()
         {
             return GraphicsDevice;
-        }
-
-        public static GameScenarioManager GetGameScenarioManager()
-        {
-            return GameScenarioManager;
-        }
-
-        public static GameMapManager GetGameMapManager()
-        {
-            return GameMapManager;
         }
 
         public static Texture2D GetMessageBackground()
@@ -95,34 +88,89 @@ namespace inpsGE
             return LightCutoutBlend;
         }
 
-        public static void ChangeScenario(string Name)
+        public static void AddMap(GameMap Map)
         {
-            GameScenarioManager.ChangeScenario(Name);
+            var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
+
+            if (EngineCheck != typeof(Engine))
+            {
+                throw new InvalidOperationException("The Core.AddMap() method can only be called from the Engine class.");
+            }
+
+            Maps.Add(Map);
         }
 
-        public static void ChangeMap(string Name)
+        public static void ChangeGameMap(string Name)
         {
-            GameMapManager.ChangeMap(Name);
+            CurrentGameMap = Maps.Find(Map => Map.GetName() == Name);
         }
 
-        public static void DrawMap(ContentManager Content, SpriteBatch _spriteBatch)
+        public static void DrawGameMap(ContentManager Content, SpriteBatch _spriteBatch)
         {
-            GameMapManager.Draw(Content, _spriteBatch);
+            for (int a = 0; a < CurrentGameMap.GetTiles().Count; a++)
+            {
+                GameTile temp = CurrentGameMap.GetTiles()[a];
+                _spriteBatch.Draw(temp.GetImage(), new Vector2(temp.PositionX, temp.PositionY), Color.White);
+            }
+
+            for (int a = 0; a < CurrentGameMap.GetObjects().Count; a++)
+            {
+                GameObject temp = CurrentGameMap.GetObjects()[a];
+                _spriteBatch.Draw(temp.GetImage(), new Vector2(temp.PositionX, temp.PositionY), Color.White);
+            }
+        }
+
+        public static void AddScenario(GameScenario Scenario)
+        {
+            var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
+
+            if (EngineCheck != typeof(Engine))
+            {
+                throw new InvalidOperationException("The Core.AddScenario() method can only be called from the Engine class.");
+            }
+
+            Scenarios.Add(Scenario);
+        }
+
+        public static void ChangeGameScenario(string Name)
+        {
+            CurrentGameScenario = Scenarios.Find(Scenario => Scenario.GetName() == Name);
+        }
+
+        public static GameMap GetCurrentGameMap()
+        {
+            return CurrentGameMap;
+        }
+
+        public static GameScenario GetCurrentGameScenario()
+        {
+            return CurrentGameScenario;
         }
 
         public static GameObject GetGameObject(int Index)
         {
-            return GameMapManager.GetCurrentGameMap().GetObjects()[Index];
+            return CurrentGameMap.GetObjects()[Index];
         }
 
         public static void DestroyGameObject(int Index)
         {
-            GameMapManager.GetCurrentGameMap().RemoveObject(Index);
+            CurrentGameMap.RemoveObject(Index);
+        }
+
+        public static void SetGameObjectLightLevel(int Index, int LightLevel)
+        {
+            Debug.WriteLine(CurrentGameMap.GetObjects());
+            CurrentGameMap.GetObjects()[Index].SetLightLevel(LightLevel);
+        }
+
+        public static void SetGameObjectEvent(int Index, Action Event)
+        {
+            CurrentGameMap.GetObjects()[Index].SetEvent(Event);
         }
 
         public static void SetAllGameObjectsLightLevel(int LightLevel)
         {
-            foreach (GameObject Object in GameMapManager.GetCurrentGameMap().GetObjects())
+            foreach (GameObject Object in CurrentGameMap.GetObjects())
             {
                 Object.SetLightLevel(LightLevel);
             }
@@ -130,20 +178,10 @@ namespace inpsGE
 
         public static void SetAllGameObjectsEvent(Action Event)
         {
-            foreach (GameObject Object in GameMapManager.GetCurrentGameMap().GetObjects())
+            foreach (GameObject Object in CurrentGameMap.GetObjects())
             {
                 Object.SetEvent(Event);
             }
-        }
-
-        public static void SetGameObjectLightLevel(int Index, int LightLevel)
-        {
-            GameMapManager.GetCurrentGameMap().GetObjects()[Index].SetLightLevel(LightLevel);
-        }
-
-        public static void SetGameObjectEvent(int Index, Action Event)
-        {
-            GameMapManager.GetCurrentGameMap().GetObjects()[Index].SetEvent(Event);
         }
     }
 }

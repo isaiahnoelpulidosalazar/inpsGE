@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace inpsGE
 {
@@ -21,11 +19,11 @@ namespace inpsGE
             DirectoryInfo TileDirectoryInfo = new DirectoryInfo("Content\\Tiles");
             DirectoryInfo ObjectDirectoryInfo = new DirectoryInfo("Content\\Objects");
 
-            string[] Map = File.ReadAllLines("Content\\Maps\\" + Name + ".lrmap");
+            string[] Map = File.ReadAllLines("Content\\Maps\\" + Name + ".igemap");
             string[] TileMap = Map.Skip(1).Take(Array.IndexOf(Map, "[OBJECTS]") - 1).ToArray();
             string[] ObjectMap = Map.Skip(Array.IndexOf(Map, "[OBJECTS]") + 1).ToArray();
-            string[] TileImages = File.ReadAllLines("Content\\Maps\\" + Name + ".lrtilemap");
-            string[] ObjectImages = File.ReadAllLines("Content\\Maps\\" + Name + ".lrobjectmap");
+            string[] TileImages = File.ReadAllLines("Content\\Maps\\" + Name + ".igetilemap");
+            string[] ObjectImages = File.ReadAllLines("Content\\Maps\\" + Name + ".igeobjectmap");
 
             for (int a = 0; a < TileMap.Length; a++)
             {

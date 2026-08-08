@@ -92,6 +92,8 @@ namespace inpsGE
 
             _spriteBatch.End();
 
+            Core.GetCurrentGameScenario().DrawUI(_spriteBatch);
+
             base.Draw(gameTime);
         }
     }

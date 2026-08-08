@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Diagnostics;
 
 namespace inpsGE
 {
@@ -10,6 +13,19 @@ namespace inpsGE
 
         public static void Update()
         {
+            var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
+
+            if (EngineCheck != typeof(Engine))
+            {
+                throw new InvalidOperationException("The Input.Update() method can only be called from the Engine class.");
+            }
+
+            MouseX = Mouse.GetState().X;
+            MouseY = Mouse.GetState().Y;
+
+            Theta = (float)Math.Atan2(MouseY - (Core.GetScreenHeight() / 2), MouseX - (Core.GetScreenWidth() / 2)) + MathHelper.PiOver2;
+            AngleInDegrees = MathHelper.ToDegrees(Theta);
+
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 MouseDown = true;

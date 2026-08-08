@@ -37,6 +37,11 @@ namespace inpsGE
             }
         }
 
+        public static Vector3 GetCameraPosition()
+        {
+            return CameraPosition;
+        }
+
         public static Matrix GetCameraMatrix()
         {
             return CameraMatrix;

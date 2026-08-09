@@ -37,15 +37,32 @@ namespace inpsGE
                     }
                 }
             }
+            int PreviousIndex = -1;
             for (int a = 0; a < ObjectMap.Length; a++)
             {
                 string[] temp = ObjectMap[a].Split(',');
+
                 for (int b = 0; b < temp.Length; b++)
                 {
                     int Index = Convert.ToInt32(temp[b]) - 1;
                     if (Index >= 0)
                     {
-                        Objects.Add(new GameObject(Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"), Core.TILE_SIZE * b, Core.TILE_SIZE * a, ObjectImages[Index].Contains("!")));
+                        if (Objects.Count <= 0)
+                        {
+                            Objects.Add(new GameObject(Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"), Core.TILE_SIZE * b, Core.TILE_SIZE * a, ObjectImages[Index].Contains("!")));
+                        }
+                        else
+                        {
+                            if (Index > PreviousIndex)
+                            {
+                                Objects.Add(new GameObject(Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"), Core.TILE_SIZE * b, Core.TILE_SIZE * a, ObjectImages[Index].Contains("!")));
+                            }
+                            else
+                            {
+                                Objects.Insert(0, new GameObject(Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"), Core.TILE_SIZE * b, Core.TILE_SIZE * a, ObjectImages[Index].Contains("!")));
+                            }
+                        }
+                        PreviousIndex = Index;
                     }
                 }
             }

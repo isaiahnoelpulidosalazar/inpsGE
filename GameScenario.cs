@@ -12,6 +12,7 @@ namespace inpsGE
         string Name;
         List<UI> UIs = new List<UI>();
 
+        public abstract void Load();
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(ContentManager Content, SpriteBatch _spriteBatch);
 

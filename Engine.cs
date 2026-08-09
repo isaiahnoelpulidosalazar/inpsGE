@@ -52,6 +52,7 @@ namespace inpsGE
 
                 if (ScenarioType != null)
                 {
+                    Debug.WriteLine(File.Name);
                     GameScenario Scenario = (GameScenario)Activator.CreateInstance(ScenarioType);
                     Scenario.SetName(Path.GetFileNameWithoutExtension(File.Name));
                     Core.AddScenario(Scenario);

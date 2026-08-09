@@ -10,7 +10,13 @@ namespace inpsGE
     {
         GameObject NearestGameObjectToPlayer;
 
-        public void SetPosition(float PositionX, float PositionY)
+        public void SetPosition(int XTileAmount, int YTileAmount)
+        {
+            PositionX = Core.TILE_SIZE * XTileAmount;
+            PositionY = Core.TILE_SIZE * YTileAmount;
+        }
+
+        public void SetExactPosition(float PositionX, float PositionY)
         {
             this.PositionX = PositionX;
             this.PositionY = PositionY;

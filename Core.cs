@@ -135,6 +135,7 @@ namespace inpsGE
         public static void ChangeGameScenario(string Name)
         {
             CurrentGameScenario = Scenarios.Find(Scenario => Scenario.GetName() == Name);
+            CurrentGameScenario.Load();
         }
 
         public static GameMap GetCurrentGameMap()

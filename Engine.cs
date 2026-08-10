@@ -45,6 +45,10 @@ namespace inpsGE
                 Core.AddMap(new GameMap(Path.GetFileNameWithoutExtension(File.Name)));
             }
 
+            GameScenario TitleScreen = new TitleScreen("Sample Title");
+            TitleScreen.SetName(Path.GetFileNameWithoutExtension("TitleScreen"));
+            Core.AddScenario(TitleScreen);
+
             foreach (FileInfo File in ScenarioDirectoryInfo.GetFiles("*.cs"))
             {
                 Assembly CompiledAssembly = Compiler.Run("Content\\Scenarios\\" + File.Name);
@@ -52,14 +56,13 @@ namespace inpsGE
 
                 if (ScenarioType != null)
                 {
-                    Debug.WriteLine(File.Name);
                     GameScenario Scenario = (GameScenario)Activator.CreateInstance(ScenarioType);
                     Scenario.SetName(Path.GetFileNameWithoutExtension(File.Name));
                     Core.AddScenario(Scenario);
                 }
             }
 
-            Core.ChangeGameScenario("MainMenu");
+            Core.ChangeGameScenario("TitleScreen");
         }
 
         protected override void Update(GameTime gameTime)
@@ -72,6 +75,7 @@ namespace inpsGE
             Input.Update();
 
             Core.GetCurrentGameScenario().Update(gameTime);
+            Core.GetCurrentGameScenario().UpdateUI();
 
             base.Update(gameTime);
         }
@@ -93,7 +97,7 @@ namespace inpsGE
 
             _spriteBatch.End();
 
-            Core.GetCurrentGameScenario().DrawUI(_spriteBatch);
+            Core.GetCurrentGameScenario().DrawUI(Content, _spriteBatch);
 
             base.Draw(gameTime);
         }

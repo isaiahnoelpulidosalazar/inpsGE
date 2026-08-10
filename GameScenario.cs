@@ -16,7 +16,22 @@ namespace inpsGE
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(ContentManager Content, SpriteBatch _spriteBatch);
 
-        public void DrawUI(SpriteBatch _spriteBatch)
+        public void UpdateUI()
+        {
+            var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
+
+            if (EngineCheck != typeof(Engine))
+            {
+                throw new InvalidOperationException("The GameScenario.UpdateUI() method can only be called from the Engine class.");
+            }
+
+            foreach (UI UI in UIs)
+            {
+                UI.UpdateUI();
+            }
+        }
+
+        public void DrawUI(ContentManager Content, SpriteBatch _spriteBatch)
         {
             var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
 
@@ -37,7 +52,7 @@ namespace inpsGE
                 {
                     _spriteBatch.Begin();
 
-                    UI.DrawUI(_spriteBatch);
+                    UI.DrawUI(Content, _spriteBatch);
 
                     _spriteBatch.End();
                 }
@@ -47,7 +62,7 @@ namespace inpsGE
             {
                 _spriteBatch.Begin();
 
-                CheckForAimUI.DrawUI(_spriteBatch);
+                CheckForAimUI.DrawUI(Content, _spriteBatch);
 
                 _spriteBatch.End();
             }

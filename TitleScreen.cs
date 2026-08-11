@@ -9,21 +9,26 @@ namespace inpsGE
     public class TitleScreen : GameScenario
     {
         string Title;
-        Button Button1;
+        Panel Panel;
 
         public TitleScreen(string Title)
         {
             this.Title = Title;
-            Button1 = new Button("Test", (GetScreenWidth() / 2) - (TILE_SIZE / 2), (GetScreenHeight() / 2) - (TILE_SIZE / 2));
-            Button1.SetEvent(delegate
+            Panel = new Panel();
+            //Button1.SetEvent(delegate
+            //{
+            //    ChangeGameScenario("MainMenu");
+            //});
+            Panel.SetGravity(Panel.Gravity.CENTER);
+            for (int a = 0; a < 12; a++)
             {
-                ChangeGameScenario("MainMenu");
-            });
+                Panel.Add(new Button("Test", 0, 0, 120, 120));
+            }
         }
 
         public override void Load()
         {
-            AddToUIDrawList(Button1);
+            AddToUIDrawList(Panel);
         }
 
         public override void Update(GameTime gameTime)

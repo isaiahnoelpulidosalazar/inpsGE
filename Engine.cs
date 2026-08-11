@@ -49,18 +49,18 @@ namespace inpsGE
             TitleScreen.SetName(Path.GetFileNameWithoutExtension("TitleScreen"));
             Core.AddScenario(TitleScreen);
 
-            foreach (FileInfo File in ScenarioDirectoryInfo.GetFiles("*.cs"))
-            {
-                Assembly CompiledAssembly = Compiler.Run("Content\\Scenarios\\" + File.Name);
-                Type ScenarioType = CompiledAssembly.GetTypes().FirstOrDefault(Type => typeof(GameScenario).IsAssignableFrom(Type) && !Type.IsAbstract && Type.IsClass);
+            //foreach (FileInfo File in ScenarioDirectoryInfo.GetFiles("*.cs"))
+            //{
+            //    Assembly CompiledAssembly = Compiler.Run("Content\\Scenarios\\" + File.Name);
+            //    Type ScenarioType = CompiledAssembly.GetTypes().FirstOrDefault(Type => typeof(GameScenario).IsAssignableFrom(Type) && !Type.IsAbstract && Type.IsClass);
 
-                if (ScenarioType != null)
-                {
-                    GameScenario Scenario = (GameScenario)Activator.CreateInstance(ScenarioType);
-                    Scenario.SetName(Path.GetFileNameWithoutExtension(File.Name));
-                    Core.AddScenario(Scenario);
-                }
-            }
+            //    if (ScenarioType != null)
+            //    {
+            //        GameScenario Scenario = (GameScenario)Activator.CreateInstance(ScenarioType);
+            //        Scenario.SetName(Path.GetFileNameWithoutExtension(File.Name));
+            //        Core.AddScenario(Scenario);
+            //    }
+            //}
 
             Core.ChangeGameScenario("TitleScreen");
         }

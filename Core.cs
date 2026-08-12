@@ -92,9 +92,9 @@ namespace inpsGE
         {
             var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
 
-            if (EngineCheck != typeof(Engine))
+            if (EngineCheck != typeof(Engine) && EngineCheck?.DeclaringType != typeof(TitleScreen))
             {
-                throw new InvalidOperationException("The Core.AddMap() method can only be called from the Engine class.");
+                throw new InvalidOperationException("The Core.AddMap() method can only be called from the Engine and TitleScreen class.");
             }
 
             Maps.Add(Map);
@@ -124,9 +124,9 @@ namespace inpsGE
         {
             var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
 
-            if (EngineCheck != typeof(Engine))
+            if (EngineCheck != typeof(Engine) && EngineCheck?.DeclaringType != typeof(TitleScreen))
             {
-                throw new InvalidOperationException("The Core.AddScenario() method can only be called from the Engine class.");
+                throw new InvalidOperationException("The Core.AddScenario() method can only be called from the Engine and TitleScreen class.");
             }
 
             Scenarios.Add(Scenario);

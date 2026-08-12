@@ -1,11 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace inpsGE
 {
@@ -13,6 +9,8 @@ namespace inpsGE
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        static Game Game;
 
         public Engine()
         {
@@ -24,6 +22,8 @@ namespace inpsGE
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            Game = this;
         }
 
         protected override void Initialize()
@@ -37,30 +37,9 @@ namespace inpsGE
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            DirectoryInfo MapDirectoryInfo = new DirectoryInfo("Content\\Maps");
-            DirectoryInfo ScenarioDirectoryInfo = new DirectoryInfo("Content\\Scenarios");
-
-            foreach (FileInfo File in MapDirectoryInfo.GetFiles("*.igemap"))
-            {
-                Core.AddMap(new GameMap(Path.GetFileNameWithoutExtension(File.Name)));
-            }
-
             GameScenario TitleScreen = new TitleScreen("Sample Title");
             TitleScreen.SetName(Path.GetFileNameWithoutExtension("TitleScreen"));
             Core.AddScenario(TitleScreen);
-
-            //foreach (FileInfo File in ScenarioDirectoryInfo.GetFiles("*.cs"))
-            //{
-            //    Assembly CompiledAssembly = Compiler.Run("Content\\Scenarios\\" + File.Name);
-            //    Type ScenarioType = CompiledAssembly.GetTypes().FirstOrDefault(Type => typeof(GameScenario).IsAssignableFrom(Type) && !Type.IsAbstract && Type.IsClass);
-
-            //    if (ScenarioType != null)
-            //    {
-            //        GameScenario Scenario = (GameScenario)Activator.CreateInstance(ScenarioType);
-            //        Scenario.SetName(Path.GetFileNameWithoutExtension(File.Name));
-            //        Core.AddScenario(Scenario);
-            //    }
-            //}
 
             Core.ChangeGameScenario("TitleScreen");
         }
@@ -100,6 +79,11 @@ namespace inpsGE
             Core.GetCurrentGameScenario().DrawUI(Content, _spriteBatch);
 
             base.Draw(gameTime);
+        }
+
+        public static void Stop()
+        {
+            Game.Exit();
         }
     }
 }

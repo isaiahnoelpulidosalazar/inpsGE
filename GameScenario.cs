@@ -82,9 +82,9 @@ namespace inpsGE
         {
             var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
 
-            if (EngineCheck != typeof(Engine))
+            if (EngineCheck != typeof(Engine) && EngineCheck?.DeclaringType != typeof(TitleScreen))
             {
-                throw new InvalidOperationException("The GameScenario.SetName() method can only be called from the Engine class.");
+                throw new InvalidOperationException("The GameScenario.SetName() method can only be called from the Engine and TitleScreen class.");
             }
 
             this.Name = Name;

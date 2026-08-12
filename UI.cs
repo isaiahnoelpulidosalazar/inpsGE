@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 
 namespace inpsGE
 {
@@ -173,6 +174,7 @@ namespace inpsGE
         {
             Texture2D BorderTexture, BlackOverlay;
             Rectangle BlackOverlayBounds;
+            Color TextColor;
             string Title;
             Action Event;
 
@@ -182,6 +184,7 @@ namespace inpsGE
                 BlackOverlay = new Texture2D(Core.GetGraphicsDevice(), 1, 1);
                 BorderTexture.SetData(new[] { Color.White });
                 BlackOverlay.SetData(new[] { Color.Black });
+                TextColor = Color.White;
 
                 this.Title = Title;
 
@@ -195,6 +198,7 @@ namespace inpsGE
                 BlackOverlay = new Texture2D(Core.GetGraphicsDevice(), 1, 1);
                 BorderTexture.SetData(new[] { Color.White });
                 BlackOverlay.SetData(new[] { Color.Black });
+                TextColor = Color.White;
 
                 this.Title = Title;
                 this.PositionX = PositionX;
@@ -210,6 +214,7 @@ namespace inpsGE
                 BlackOverlay = new Texture2D(Core.GetGraphicsDevice(), 1, 1);
                 BorderTexture.SetData(new[] { Color.White });
                 BlackOverlay.SetData(new[] { Color.Black });
+                TextColor = Color.White;
 
                 this.Title = Title;
                 this.PositionX = PositionX;
@@ -259,10 +264,12 @@ namespace inpsGE
                     if (Input.MouseDown)
                     {
                         BorderTexture.SetData(new[] { Color.Gray });
+                        TextColor = Color.Gray;
                     }
                     else
                     {
                         BorderTexture.SetData(new[] { Color.White });
+                        TextColor = Color.White;
                     }
                     if (Input.MouseUp)
                     {
@@ -272,6 +279,7 @@ namespace inpsGE
                 else
                 {
                     BorderTexture.SetData(new[] { Color.White });
+                    TextColor = Color.White;
                 }
             }
 
@@ -279,6 +287,7 @@ namespace inpsGE
             {
                 _spriteBatch.Draw(BorderTexture, Bounds, Color.White);
                 _spriteBatch.Draw(BlackOverlay, BlackOverlayBounds, Color.White);
+                _spriteBatch.DrawString(Content.Load<SpriteFont>("DefaultFont_Text"), Title, new Vector2((Bounds.Width / 2) - (Content.Load<SpriteFont>("DefaultFont_Text").MeasureString(Title).X / 2) + PositionX, (Bounds.Height / 2) - (Content.Load<SpriteFont>("DefaultFont_Text").MeasureString(Title).Y / 2) + PositionY), TextColor, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
             }
         }
 

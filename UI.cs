@@ -25,194 +25,146 @@ namespace inpsGE
         {
             public enum Gravity
             {
-                LEFT, RIGHT, CENTER
-            }
-
-            class LastElementInRow
-            {
-                public int Row, Index;
-
-                public LastElementInRow(int Row, int Index)
-                {
-                    this.Row = Row;
-                    this.Index = Index;
-                }
+                LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM,
+                CENTER_TOP, CENTER_CENTER, CENTER_BOTTOM,
+                RIGHT_TOP, RIGHT_CENTER, RIGHT_BOTTOM
             }
 
             Gravity PanelGravity;
+            int ItemGap;
             List<View> ElementList = new List<View>();
-            int ElementX = 0, ElementY = 0, Row = 0;
-            List<LastElementInRow> LastElements = new List<LastElementInRow>();
 
-            public Panel()
+            public Panel(Gravity PanelGravity = Gravity.LEFT_TOP, int ItemGap = 0)
             {
-                SetGravity(Gravity.LEFT);
+                this.ItemGap = ItemGap;
+                this.PanelGravity = PanelGravity;
             }
+
+            public Panel(int ItemGap) : this(Gravity.LEFT_TOP, ItemGap) { }
 
             public void SetGravity(Gravity PanelGravity)
             {
                 this.PanelGravity = PanelGravity;
-                if (PanelGravity == Gravity.RIGHT)
-                {
-                    ElementX = Core.GetScreenWidth();
-                }
-                if (PanelGravity == Gravity.CENTER)
-                {
-                    ElementX = Core.GetScreenWidth() / 2;
-                    ElementY = Core.GetScreenHeight() / 2;
-                }
+                RecalculateLayout();
             }
 
-            public void Add(View View)
+            public void SetItemGap(int ItemGap)
             {
-                if (PanelGravity == Gravity.LEFT)
+                this.ItemGap = ItemGap;
+                RecalculateLayout();
+            }
+
+            public void Add(View view)
+            {
+                ElementList.Add(view);
+                RecalculateLayout();
+            }
+
+            public void RecalculateLayout()
+            {
+                if (ElementList.Count == 0)
                 {
-                    int CalculateX = ElementX + View.Bounds.Right;
-                    int MaxX = Core.GetScreenWidth();
-
-                    if (CalculateX < MaxX)
-                    {
-                        View.OverridePosition(ElementX, ElementY);
-                        ElementX = View.Bounds.Right;
-                    }
-                    else
-                    {
-                        LastElements.Add(new LastElementInRow(Row, ElementList.Count - 1));
-                        int LargestElementY = 0;
-                        foreach (View ViewInElementList in ElementList)
-                        {
-                            if (ViewInElementList.Bounds.Bottom > LargestElementY)
-                            {
-                                LargestElementY = ViewInElementList.Bounds.Bottom;
-                            }
-                        }
-                        ElementY = LargestElementY;
-                        ElementX = 0;
-                        View.OverridePosition(ElementX, ElementY);
-                        ElementX = View.Bounds.Right;
-                        Row++;
-                    }
-                }
-                if (PanelGravity == Gravity.RIGHT)
-                {
-                    int CalculateX = ElementX - View.Bounds.Width;
-                    int MaxX = 0;
-
-                    if (CalculateX > MaxX)
-                    {
-                        ElementX -= View.Bounds.Width;
-                        View.OverridePosition(ElementX, ElementY);
-                    }
-                    else
-                    {
-                        LastElements.Add(new LastElementInRow(Row, ElementList.Count - 1));
-                        int LargestElementY = 0;
-                        foreach (View ViewInElementList in ElementList)
-                        {
-                            if (ViewInElementList.Bounds.Bottom > LargestElementY)
-                            {
-                                LargestElementY = ViewInElementList.Bounds.Bottom;
-                            }
-                        }
-                        ElementY = LargestElementY;
-                        ElementX = Core.GetScreenWidth() - View.Bounds.Width;
-                        View.OverridePosition(ElementX, ElementY);
-                        Row++;
-                    }
-                }
-                if (PanelGravity == Gravity.CENTER)
-                {
-                    int CalculateX = ElementX + View.Bounds.Right;
-                    int MaxX = Core.GetScreenWidth();
-
-                    if (ElementList.Count > 0)
-                    {
-                        View PreviousElementX = null;
-
-                        for (int a = 0; a < ElementList.Count; a++)
-                        {
-                            if (a < ElementList.Count - 1)
-                            {
-                                View NextElementX = ElementList[a + 1];
-                                ElementList[a].OverridePosition(ElementList[a].PositionX - (NextElementX.Width / 2), ElementY);
-                            }
-                            else
-                            {
-                                PreviousElementX = ElementList[a];
-                                ElementList[a].OverridePosition(ElementList[a].PositionX - (View.Bounds.Width / 2), ElementY);
-                            }
-                        }
-                        View LastElementInList = ElementList[ElementList.Count - 1];
-                        CalculateX = LastElementInList.Bounds.Right + View.Bounds.Right;
-
-                        if (CalculateX < MaxX)
-                        {
-                            LastElementInRow Last = null;
-                            if (LastElements.Count > 0)
-                            {
-                                Last = LastElements[LastElements.Count - 1];
-                                View.OverridePosition(PreviousElementX.Bounds.Right, ElementList[Last.Index].Bounds.Bottom);
-                            }
-                            else
-                            {
-                                View.OverridePosition(PreviousElementX.Bounds.Right, ElementY);
-                            }
-                        }
-                        else
-                        {
-                            LastElements.Add(new LastElementInRow(Row, ElementList.Count - 1));
-                            int LargestElementY = 0;
-                            for (int a = 0; a < ElementList.Count; a++)
-                            {
-                                if (ElementList[a].Bounds.Height > LargestElementY)
-                                {
-                                    LargestElementY = ElementList[a].Bounds.Height;
-                                }
-                            }
-                            ElementY -= LargestElementY / 2;
-                            for (int a = 0; a < ElementList.Count; a++)
-                            {
-                                if (a < ElementList.Count - 1)
-                                {
-                                    View NextElementX = ElementList[a + 1];
-                                    ElementList[a].OverridePosition(ElementList[a].PositionX + (NextElementX.Width / 2), ElementY);
-                                }
-                                else
-                                {
-                                    PreviousElementX = ElementList[a];
-                                    ElementList[a].OverridePosition(ElementList[a].PositionX + (View.Bounds.Width / 2), ElementY);
-                                }
-                            }
-                            View.OverridePosition(ElementX - (View.Bounds.Width / 2), ElementY);
-                            Row++;
-                        }
-                    }
-                    else
-                    {
-                        if (CalculateX < MaxX)
-                        {
-                            ElementY -= View.Bounds.Height / 2;
-                            View.OverridePosition(ElementX - (View.Bounds.Width / 2), ElementY);
-                        }
-                    }
+                    return;
                 }
 
-                ElementList.Add(View);
+                List<List<View>> Rows = new List<List<View>>();
+                List<View> CurrentRow = new List<View>();
+                int CurrentRowWidth = 0;
+
+                foreach (View View in ElementList)
+                {
+                    int ViewWidth = View.Bounds.Width;
+                    if (CurrentRow.Count > 0 && CurrentRowWidth + ItemGap + ViewWidth > Core.GetScreenWidth())
+                    {
+                        Rows.Add(CurrentRow);
+                        CurrentRow = new List<View>();
+                        CurrentRowWidth = 0;
+                    }
+
+                    if (CurrentRow.Count > 0) CurrentRowWidth += ItemGap;
+                    CurrentRow.Add(View);
+                    CurrentRowWidth += ViewWidth;
+                }
+                if (CurrentRow.Count > 0) Rows.Add(CurrentRow);
+
+                int TotalHeight = 0;
+                List<int> RowWidths = new List<int>();
+                List<int> RowHeights = new List<int>();
+
+                for (int a = 0; a < Rows.Count; a++)
+                {
+                    int RowWidth = 0;
+                    int RowHeight = 0;
+                    for (int b = 0; b < Rows[a].Count; b++)
+                    {
+                        var View = Rows[a][b];
+                        RowWidth += View.Bounds.Width;
+                        if (b > 0)
+                        {
+                            RowWidth += ItemGap;
+                        }
+                        if (View.Bounds.Height > RowHeight)
+                        {
+                            RowHeight = View.Bounds.Height;
+                        }
+                    }
+                    RowWidths.Add(RowWidth);
+                    RowHeights.Add(RowHeight);
+
+                    TotalHeight += RowHeight;
+                    if (a > 0) TotalHeight += ItemGap;
+                }
+
+                int StartY = 0;
+                if (PanelGravity == Gravity.LEFT_CENTER || PanelGravity == Gravity.CENTER_CENTER || PanelGravity == Gravity.RIGHT_CENTER)
+                {
+                    StartY = (Core.GetScreenHeight() - TotalHeight) / 2;
+                }
+                else if (PanelGravity == Gravity.LEFT_BOTTOM || PanelGravity == Gravity.CENTER_BOTTOM || PanelGravity == Gravity.RIGHT_BOTTOM)
+                {
+                    StartY = Core.GetScreenHeight() - TotalHeight;
+                }
+
+                int CurrentY = StartY;
+                for (int a = 0; a < Rows.Count; a++)
+                {
+                    int RowWidth = RowWidths[a];
+                    int RowHeight = RowHeights[a];
+
+                    int CurrentX = 0;
+                    if (PanelGravity == Gravity.CENTER_TOP || PanelGravity == Gravity.CENTER_CENTER || PanelGravity == Gravity.CENTER_BOTTOM)
+                    {
+                        CurrentX = (Core.GetScreenWidth() - RowWidth) / 2;
+                    }
+                    else if (PanelGravity == Gravity.RIGHT_TOP || PanelGravity == Gravity.RIGHT_CENTER || PanelGravity == Gravity.RIGHT_BOTTOM)
+                    {
+                        CurrentX = Core.GetScreenWidth() - RowWidth;
+                    }
+
+                    foreach (var View in Rows[a])
+                    {
+                        int ViewY = CurrentY + (RowHeight - View.Bounds.Height) / 2;
+                        View.OverridePosition(CurrentX, ViewY);
+                        CurrentX += View.Bounds.Width + ItemGap;
+                    }
+
+                    CurrentY += RowHeight + ItemGap;
+                }
             }
 
             public override void UpdateUI()
             {
-                foreach (View View in ElementList)
+                foreach (View view in ElementList)
                 {
-                    View.UpdateUI();
+                    view.UpdateUI();
                 }
             }
 
             public override void DrawUI(ContentManager Content, SpriteBatch _spriteBatch)
             {
-                foreach (View View in ElementList)
+                foreach (View view in ElementList)
                 {
-                    View.DrawUI(Content, _spriteBatch);
+                    view.DrawUI(Content, _spriteBatch);
                 }
             }
         }

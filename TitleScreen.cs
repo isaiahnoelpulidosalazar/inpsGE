@@ -19,8 +19,8 @@ namespace inpsGE
             //{
             //    ChangeGameScenario("MainMenu");
             //});
-            Panel.SetGravity(Panel.Gravity.CENTER);
-            for (int a = 0; a < 12; a++)
+            Panel.SetGravity(Panel.Gravity.CENTER_BOTTOM);
+            for (int a = 0; a < 21; a++)
             {
                 Panel.Add(new Button("Test", 0, 0, 120, 120));
             }

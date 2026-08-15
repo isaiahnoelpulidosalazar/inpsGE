@@ -31,6 +31,8 @@ namespace inpsGE
         static GameMap CurrentGameMap;
         static GameScenario CurrentGameScenario;
 
+        static List<GameTimer> GameTimers = new List<GameTimer>();
+
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
             var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
@@ -156,6 +158,33 @@ namespace inpsGE
         public static void DestroyGameObject(int Index)
         {
             CurrentGameMap.RemoveObject(Index);
+        }
+
+        public static void AddGlobalGameTimer(GameTimer GameTimer)
+        {
+            GameTimers.Add(GameTimer);
+        }
+
+        public static void GlobalGameTimerUpdate(GameTime gameTime)
+        {
+            var EngineCheck = new StackFrame(1).GetMethod()?.DeclaringType;
+
+            if (EngineCheck != typeof(Engine))
+            {
+                throw new InvalidOperationException("The Core.GlobalGameTimerUpdate() method can only be called from the Engine class.");
+            }
+
+            for (int a = 0; a < GameTimers.Count; a++)
+            {
+                if (GameTimers[a].IsActive)
+                {
+                    GameTimers[a].Update(gameTime);
+                }
+                else
+                {
+                    GameTimers.RemoveAt(a);
+                }
+            }
         }
 
         public static void SetGameObjectLightLevel(int Index, int LightLevel)

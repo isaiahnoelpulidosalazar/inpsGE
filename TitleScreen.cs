@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using inpsNuGet;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -15,6 +16,7 @@ namespace inpsGE
         string Title;
         Panel Panel;
         Button PlayButton, QuitButton;
+        GameTimer GameTimer = new GameTimer(1);
 
         public TitleScreen(string Title)
         {
@@ -40,31 +42,48 @@ namespace inpsGE
                 FileInfo[] ScenarioFiles = ScenarioDirectoryInfo.GetFiles("*.cs");
                 int TotalProgress = MapFiles.Length + ScenarioFiles.Length;
 
-                ProgressBar.StepCounter = 50;
+                ProgressBar.StepCounter = 100 / TotalProgress;
 
-                foreach (FileInfo File in MapFiles)
+                new Actions(() =>
                 {
-                    AddMap(new GameMap(Path.GetFileNameWithoutExtension(File.Name)));
-                }
-
-                ProgressBar.StepForward();
-
-                foreach (FileInfo File in ScenarioFiles)
-                {
-                    Assembly CompiledAssembly = Compiler.Run("Content\\Scenarios\\" + File.Name);
-                    Type ScenarioType = CompiledAssembly.GetTypes().FirstOrDefault(Type => typeof(GameScenario).IsAssignableFrom(Type) && !Type.IsAbstract && Type.IsClass);
-
-                    if (ScenarioType != null)
+                    foreach (FileInfo File in MapFiles)
                     {
-                        GameScenario Scenario = (GameScenario)Activator.CreateInstance(ScenarioType);
-                        Scenario.SetName(Path.GetFileNameWithoutExtension(File.Name));
-                        AddScenario(Scenario);
+                        AddMap(new GameMap(Path.GetFileNameWithoutExtension(File.Name)));
+                        new Actions(() =>
+                        {
+                            ProgressBar.StepForward();
+                        }).Run();
                     }
-                }
 
-                ProgressBar.StepForward();
+                    foreach (FileInfo File in ScenarioFiles)
+                    {
+                        Assembly CompiledAssembly = Compiler.Run("Content\\Scenarios\\" + File.Name);
+                        Type ScenarioType = CompiledAssembly.GetTypes().FirstOrDefault(Type => typeof(GameScenario).IsAssignableFrom(Type) && !Type.IsAbstract && Type.IsClass);
 
-                ChangeGameScenario("MainMenu");
+                        if (ScenarioType != null)
+                        {
+                            new Actions(() =>
+                            {
+                                ProgressBar.StepForward();
+                            }).Run();
+                            GameScenario Scenario = (GameScenario)Activator.CreateInstance(ScenarioType);
+                            Scenario.SetName(Path.GetFileNameWithoutExtension(File.Name));
+                            AddScenario(Scenario);
+                        }
+                    }
+
+                    new Actions(() =>
+                    {
+                        ProgressBar.StepForward();
+                    }).Run();
+
+                    GameTimer.SetEvent(() =>
+                    {
+                        ChangeGameScenario("Home");
+                    });
+
+                    AddGlobalGameTimer(GameTimer);
+                }).Run();
             });
             QuitButton.SetEvent(static delegate
             {
@@ -80,9 +99,7 @@ namespace inpsGE
             AddToUIDrawList(Panel);
         }
 
-        public override void Update(GameTime gameTime)
-        {
-        }
+        public override void Update(GameTime gameTime) { }
 
         public override void Draw(ContentManager Content, SpriteBatch _spriteBatch)
         {

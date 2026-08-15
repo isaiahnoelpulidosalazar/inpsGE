@@ -53,6 +53,7 @@ namespace inpsGE
 
             Input.Update();
 
+            Core.GlobalGameTimerUpdate(gameTime);
             Core.GetCurrentGameScenario().Update(gameTime);
             Core.GetCurrentGameScenario().UpdateUI();
 

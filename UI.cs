@@ -60,6 +60,24 @@ namespace inpsGE
                 RecalculateLayout();
             }
 
+            public void Remove(int Index)
+            {
+                ElementList.RemoveAt(Index);
+                RecalculateLayout();
+            }
+
+            public void Remove(View View)
+            {
+                ElementList.Remove(View);
+                RecalculateLayout();
+            }
+
+            public void Clear()
+            {
+                ElementList.Clear();
+                RecalculateLayout();
+            }
+
             public void RecalculateLayout()
             {
                 if (ElementList.Count == 0)
@@ -154,17 +172,17 @@ namespace inpsGE
 
             public override void UpdateUI()
             {
-                foreach (View view in ElementList)
+                for (int a = 0; a < ElementList.Count; a++)
                 {
-                    view.UpdateUI();
+                    ElementList[a].UpdateUI();
                 }
             }
 
             public override void DrawUI(ContentManager Content, SpriteBatch _spriteBatch)
             {
-                foreach (View view in ElementList)
+                for (int a = 0; a < ElementList.Count; a++)
                 {
-                    view.DrawUI(Content, _spriteBatch);
+                    ElementList[a].DrawUI(Content, _spriteBatch);
                 }
             }
         }
@@ -287,6 +305,126 @@ namespace inpsGE
                 _spriteBatch.Draw(BorderTexture, Bounds, Color.White);
                 _spriteBatch.Draw(BlackOverlay, BlackOverlayBounds, Color.White);
                 _spriteBatch.DrawString(Content.Load<SpriteFont>("DefaultFont_Text"), Title, new Vector2((Bounds.Width / 2) - (Content.Load<SpriteFont>("DefaultFont_Text").MeasureString(Title).X / 2) + PositionX, (Bounds.Height / 2) - (Content.Load<SpriteFont>("DefaultFont_Text").MeasureString(Title).Y / 2) + PositionY), TextColor, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
+            }
+        }
+
+        public class ProgressBar : View
+        {
+            public int StepCounter = 1;
+            public float Progress = 0f;
+
+            Texture2D BorderTexture, BackgroundTexture, FillTexture;
+            Rectangle BackgroundBounds, FillBounds;
+            string Title = "";
+
+            public ProgressBar(string Title = "")
+            {
+                InitTextures();
+                this.Title = Title;
+                Bounds = new Rectangle(PositionX, PositionY, Core.TILE_SIZE * 2, Core.TILE_SIZE / 2);
+                UpdateLayout();
+            }
+
+            public ProgressBar(int PositionX, int PositionY, string Title = "")
+            {
+                InitTextures();
+                this.PositionX = PositionX;
+                this.PositionY = PositionY;
+                this.Title = Title;
+                Bounds = new Rectangle(PositionX, PositionY, Core.TILE_SIZE * 2, Core.TILE_SIZE / 2);
+                UpdateLayout();
+            }
+
+            public ProgressBar(int PositionX, int PositionY, int Width, int Height, string Title = "")
+            {
+                InitTextures();
+                this.PositionX = PositionX;
+                this.PositionY = PositionY;
+                this.Width = Width;
+                this.Height = Height;
+                this.Title = Title;
+                Bounds = new Rectangle(PositionX, PositionY, Width, Height);
+                UpdateLayout();
+            }
+
+            void InitTextures()
+            {
+                BorderTexture = new Texture2D(Core.GetGraphicsDevice(), 1, 1);
+                BackgroundTexture = new Texture2D(Core.GetGraphicsDevice(), 1, 1);
+                FillTexture = new Texture2D(Core.GetGraphicsDevice(), 1, 1);
+
+                BorderTexture.SetData(new[] { Color.White });
+                BackgroundTexture.SetData(new[] { Color.Black });
+                FillTexture.SetData(new[] { Color.Green });
+            }
+
+            void UpdateLayout()
+            {
+                int w = Width == -1 ? Core.TILE_SIZE * 2 : Width;
+                int h = Height == -1 ? Core.TILE_SIZE / 2 : Height;
+                Bounds = new Rectangle(PositionX, PositionY, w, h);
+                BackgroundBounds = new Rectangle(PositionX + 1, PositionY + 1, Math.Max(0, w - 2), Math.Max(0, h - 2));
+                UpdateFillBounds();
+            }
+
+            void UpdateFillBounds()
+            {
+                int fillWidth = (int)(BackgroundBounds.Width * MathHelper.Clamp(Progress, 0f, 1f));
+                FillBounds = new Rectangle(BackgroundBounds.X, BackgroundBounds.Y, fillWidth, BackgroundBounds.Height);
+            }
+
+            public void SetTitle(string Title)
+            {
+                this.Title = Title;
+            }
+
+            public void SetProgress(float Progress)
+            {
+                this.Progress = MathHelper.Clamp(Progress, 0f, 1f);
+                UpdateFillBounds();
+            }
+
+            public void StepForward()
+            {
+                SetProgress(Progress + (StepCounter / 100f));
+            }
+
+            public void StepForward(int StepCounter)
+            {
+                this.StepCounter = StepCounter;
+                StepForward();
+            }
+
+            public void StepBackward()
+            {
+                SetProgress(Progress - (StepCounter / 100f));
+            }
+
+            public void StepBackward(int StepCounter)
+            {
+                this.StepCounter = StepCounter;
+                StepBackward();
+            }
+
+            public override void OverridePosition(int PositionX, int PositionY)
+            {
+                this.PositionX = PositionX;
+                this.PositionY = PositionY;
+                UpdateLayout();
+            }
+
+            public override void DrawUI(ContentManager Content, SpriteBatch _spriteBatch)
+            {
+                if (!string.IsNullOrEmpty(Title))
+                {
+                    SpriteFont font = Content.Load<SpriteFont>("DefaultFont_Text");
+                    Vector2 textSize = font.MeasureString(Title);
+                    _spriteBatch.DrawString(font, Title, new Vector2((Bounds.Width / 2) - (textSize.X / 2) + PositionX, PositionY - textSize.Y - 2), Color.White);
+                }
+
+                _spriteBatch.Draw(BorderTexture, Bounds, Color.White);
+                _spriteBatch.Draw(BackgroundTexture, BackgroundBounds, Color.White);
+                _spriteBatch.Draw(FillTexture, FillBounds, Color.White);
             }
         }
 

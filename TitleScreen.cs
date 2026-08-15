@@ -29,15 +29,27 @@ namespace inpsGE
 
             PlayButton.SetEvent(delegate
             {
+                Panel.Clear();
+                ProgressBar ProgressBar = new ProgressBar("Loading resources...");
+                Panel.Add(ProgressBar);
+
                 DirectoryInfo MapDirectoryInfo = new DirectoryInfo("Content\\Maps");
                 DirectoryInfo ScenarioDirectoryInfo = new DirectoryInfo("Content\\Scenarios");
 
-                foreach (FileInfo File in MapDirectoryInfo.GetFiles("*.igemap"))
+                FileInfo[] MapFiles = MapDirectoryInfo.GetFiles("*.igemap");
+                FileInfo[] ScenarioFiles = ScenarioDirectoryInfo.GetFiles("*.cs");
+                int TotalProgress = MapFiles.Length + ScenarioFiles.Length;
+
+                ProgressBar.StepCounter = 50;
+
+                foreach (FileInfo File in MapFiles)
                 {
                     AddMap(new GameMap(Path.GetFileNameWithoutExtension(File.Name)));
                 }
 
-                foreach (FileInfo File in ScenarioDirectoryInfo.GetFiles("*.cs"))
+                ProgressBar.StepForward();
+
+                foreach (FileInfo File in ScenarioFiles)
                 {
                     Assembly CompiledAssembly = Compiler.Run("Content\\Scenarios\\" + File.Name);
                     Type ScenarioType = CompiledAssembly.GetTypes().FirstOrDefault(Type => typeof(GameScenario).IsAssignableFrom(Type) && !Type.IsAbstract && Type.IsClass);
@@ -49,6 +61,8 @@ namespace inpsGE
                         AddScenario(Scenario);
                     }
                 }
+
+                ProgressBar.StepForward();
 
                 ChangeGameScenario("MainMenu");
             });

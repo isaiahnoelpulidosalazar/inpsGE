@@ -1,2 +1,11 @@
-﻿using var game = new inpsGE.Engine();
-game.Run();
+﻿namespace inpsGE
+{
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            using var game = new Engine();
+            game.Run();
+        }
+    }
+}

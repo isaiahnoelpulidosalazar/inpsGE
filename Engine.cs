@@ -11,8 +11,9 @@ namespace inpsGE
         private SpriteBatch _spriteBatch;
 
         static Game Game;
+        static string Title;
 
-        public Engine()
+        public Engine(string TitleName)
         {
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
@@ -24,6 +25,7 @@ namespace inpsGE
             IsMouseVisible = true;
 
             Game = this;
+            Title = TitleName;
         }
 
         protected override void Initialize()
@@ -37,7 +39,7 @@ namespace inpsGE
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            GameScenario TitleScreen = new TitleScreen("Sample Title");
+            GameScenario TitleScreen = new TitleScreen(Title);
             TitleScreen.SetName(Path.GetFileNameWithoutExtension("TitleScreen"));
             Core.AddScenario(TitleScreen);
 

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using static inpsGE.UI;
 
 namespace inpsGE
 {
@@ -98,8 +97,8 @@ namespace inpsGE
                 PositionY = (float)Math.Round(PositionY);
             }
 
-            Bounds = new Rectangle((int)PositionX + 8, (int)PositionY + 32, 32, 16);
-            InteractionArea = new Rectangle((int)PositionX - 4, (int)PositionY - 4, Core.TILE_SIZE + 8, Core.TILE_SIZE + 8);
+            Bounds = new Rectangle((int)PositionX + 4, (int)PositionY + 24, 24, 8);
+            InteractionArea = new Rectangle((int)PositionX - 1, (int)PositionY - 1, Core.TILE_SIZE + 2, Core.TILE_SIZE + 2);
         }
 
         public void Draw(ContentManager Content, SpriteBatch _spriteBatch)
@@ -109,8 +108,8 @@ namespace inpsGE
             if (NearestGameObject(this, Core.GetCurrentGameMap().GetObjects()) != null)
             {
                 GameObject NearestObject = NearestGameObject(this, Core.GetCurrentGameMap().GetObjects());
-                _spriteBatch.Draw(Core.GetMessageBackground(), new Rectangle((int)Math.Round(NearestObject.GetBounds().X + (Core.TILE_SIZE / 2) - (Content.Load<SpriteFont>("DefaultFont_Text").MeasureString("[E] to interact").X / 2)), NearestObject.GetBounds().Y - (Core.TILE_SIZE / 2), (int)Math.Round(Content.Load<SpriteFont>("DefaultFont_Text").MeasureString("[E] to interact").X) + 3, (int)Math.Round(Content.Load<SpriteFont>("DefaultFont_Text").MeasureString("[E] to interact").Y)), Color.White);
-                _spriteBatch.DrawString(Content.Load<SpriteFont>("DefaultFont_Text"), "[E] to interact", new Vector2(NearestObject.GetBounds().X + (Core.TILE_SIZE / 2) + 3 - (Content.Load<SpriteFont>("DefaultFont_Text").MeasureString("[E] to interact").X / 2), NearestObject.GetBounds().Y - (Core.TILE_SIZE / 2)), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
+                _spriteBatch.Draw(Core.GetMessageBackground(), new Rectangle((int)Math.Round(NearestObject.GetBounds().X + (Core.TILE_SIZE / 2) - (Content.Load<SpriteFont>("DefaultFont_Text").MeasureString("[E] to interact").X / 2)), NearestObject.GetBounds().Y - (Core.TILE_SIZE / 2), (int)Math.Round(Content.Load<SpriteFont>("DefaultFont_Text").MeasureString("[E] to interact").X), (int)Math.Round(Content.Load<SpriteFont>("DefaultFont_Text").MeasureString("[E] to interact").Y)), Color.White);
+                _spriteBatch.DrawString(Content.Load<SpriteFont>("DefaultFont_Text"), "[E] to interact", new Vector2(NearestObject.GetBounds().X + (Core.TILE_SIZE / 2) + 1 - (Content.Load<SpriteFont>("DefaultFont_Text").MeasureString("[E] to interact").X / 2), NearestObject.GetBounds().Y - (Core.TILE_SIZE / 2)), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
             }
         }
     }

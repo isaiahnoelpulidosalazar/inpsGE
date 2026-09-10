@@ -435,7 +435,7 @@ namespace inpsGE
 
             public Aim(Entity Entity)
             {
-                AimArrowImage = Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Assets\\aim_arrow.png");
+                AimArrowImage = Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Assets\\aim_arrow_x32.png");
                 this.Entity = Entity;
             }
 
@@ -455,7 +455,7 @@ namespace inpsGE
 
             public Hint(Entity Entity, GameObject Object)
             {
-                HintArrowImage = Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Assets\\hint_arrow.png");
+                HintArrowImage = Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Assets\\hint_arrow_x32.png");
                 this.Entity = Entity;
                 this.Object = Object;
             }

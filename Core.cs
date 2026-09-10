@@ -10,7 +10,7 @@ namespace inpsGE
     public class Core
     {
         static int SCREEN_WIDTH, SCREEN_HEIGHT;
-        public const int TILE_SIZE = 48, VERY_SHORT = 5, SHORT = 15, MEDIUM = 30, LONG = 75;
+        public const int TILE_SIZE = 32, VERY_SHORT = 5, SHORT = 15, MEDIUM = 30, LONG = 75;
 
         static GraphicsDevice GraphicsDevice;
 

@@ -107,18 +107,24 @@ namespace inpsGE
             CurrentGameMap = Maps.Find(Map => Map.GetName() == Name);
         }
 
-        public static void DrawGameMap(ContentManager Content, SpriteBatch _spriteBatch)
+        public static void DrawGameMap(ContentManager Content, SpriteBatch _spriteBatch, Entity Entity)
         {
             for (int a = 0; a < CurrentGameMap.GetTiles().Count; a++)
             {
                 GameTile Tile = CurrentGameMap.GetTiles()[a];
-                _spriteBatch.Draw(Tile.GetImage(), new Vector2(Tile.GetPositionX(), Tile.GetPositionY()), Color.White);
+                if (Tile.GetRoomID().Contains(Entity.CurrentRoomID))
+                {
+                    _spriteBatch.Draw(Tile.GetImage(), new Vector2(Tile.GetPositionX(), Tile.GetPositionY()), Color.White);
+                }
             }
 
             for (int a = 0; a < CurrentGameMap.GetObjects().Count; a++)
             {
                 GameObject Object = CurrentGameMap.GetObjects()[a];
-                _spriteBatch.Draw(Object.GetImage(), new Vector2(Object.GetPositionX(), Object.GetPositionY()), Color.White);
+                if (Object.GetRoomID().Contains(Entity.CurrentRoomID))
+                {
+                    _spriteBatch.Draw(Object.GetImage(), new Vector2(Object.GetPositionX(), Object.GetPositionY()), Color.White);
+                }
             }
         }
 

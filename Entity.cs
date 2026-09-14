@@ -11,6 +11,7 @@ namespace inpsGE
         public float PositionX, PositionY, Speed;
         public Rectangle Bounds, InteractionArea;
         public bool Up, Down, Left, Right;
+        public int CurrentRoomID;
 
         public void SetImage(Texture2D Image)
         {
@@ -25,6 +26,22 @@ namespace inpsGE
         public Texture2D GetImage()
         {
             return Image;
+        }
+
+        public void CheckRoomID(Entity Entity, List<GameTile> Tiles)
+        {
+            foreach (GameTile Tile in Tiles)
+            {
+                if (Tile.GetBounds().Intersects(Entity.Bounds))
+                {
+                    int Room = Tile.GetRoomID().Find(ID => Tile.GetRoomID().Count == 1);
+                    if (Room != 0)
+                    {
+                        CurrentRoomID = Room;
+                    }
+                    break;
+                }
+            }
         }
 
         public void CheckTileCollision(Entity Entity, List<GameTile> Tiles)

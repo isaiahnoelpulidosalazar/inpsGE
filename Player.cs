@@ -38,6 +38,7 @@ namespace inpsGE
             bool DL = Down && Left;
             bool DR = Down && Right;
 
+            CheckRoomID(this, Core.GetCurrentGameMap().GetTiles());
             CheckTileCollision(this, Core.GetCurrentGameMap().GetTiles());
             CheckObjectCollision(this, Core.GetCurrentGameMap().GetObjects());
             NearestGameObjectToPlayer = NearestGameObject(this, Core.GetCurrentGameMap().GetObjects());

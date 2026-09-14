@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace inpsGE
 {
@@ -9,18 +10,30 @@ namespace inpsGE
         Texture2D Image;
         float PositionX, PositionY;
         Rectangle Bounds;
+        List<int> RoomID;
         bool IsObjectSolid;
         Action Event;
         int LightLevel = 0;
         bool IsPlayerNearMe = false;
 
-        public GameObject(Texture2D Image, float PositionX, float PositionY, bool IsObjectSolid)
+        public GameObject(Texture2D Image, float PositionX, float PositionY, bool IsObjectSolid, List<int> RoomID)
         {
             this.Image = Image;
             this.PositionX = PositionX;
             this.PositionY = PositionY;
             Bounds = new Rectangle((int)Math.Round(PositionX), (int)Math.Round(PositionY), Core.TILE_SIZE, Core.TILE_SIZE);
             this.IsObjectSolid = IsObjectSolid;
+            this.RoomID = RoomID;
+        }
+
+        public void SetImage(string FilePath)
+        {
+            Image = Texture2D.FromFile(Core.GetGraphicsDevice(), FilePath);
+        }
+
+        public void SetImage(Texture2D Image)
+        {
+            this.Image = Image;
         }
 
         public Texture2D GetImage()
@@ -41,6 +54,16 @@ namespace inpsGE
         public Rectangle GetBounds()
         {
             return Bounds;
+        }
+
+        public List<int> GetRoomID()
+        {
+            return RoomID;
+        }
+
+        public void SetSolid(bool IsObjectSolid)
+        {
+            this.IsObjectSolid = IsObjectSolid;
         }
 
         public bool IsSolid()

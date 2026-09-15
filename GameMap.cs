@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -42,10 +41,9 @@ namespace inpsGE
                 .Select(Group => Group.Select(X => X.NewLine).ToArray())
                 .ToList();
 
-            Debug.WriteLine(TileResultGroups.Count);
-
-            foreach (string[] TileMapGroup in TileResultGroups)
+            for (int FloorIndex = 0; FloorIndex < TileResultGroups.Count; FloorIndex++)
             {
+                string[] TileMapGroup = TileResultGroups[FloorIndex];
                 for (int a = 0; a < TileMapGroup.Length; a++)
                 {
                     string[] temp = TileMapGroup[a].Split(',');
@@ -62,15 +60,17 @@ namespace inpsGE
                                 Core.TILE_SIZE * b,
                                 Core.TILE_SIZE * a,
                                 TileImages[Index].Contains("!"),
-                                RoomID
+                                RoomID,
+                                FloorIndex
                             ));
                         }
                     }
                 }
             }
 
-            foreach (string[] ObjectMapGroup in ObjectResultGroups)
+            for (int FloorIndex = 0; FloorIndex < ObjectResultGroups.Count; FloorIndex++)
             {
+                string[] ObjectMapGroup = ObjectResultGroups[FloorIndex];
                 for (int a = 0; a < ObjectMapGroup.Length; a++)
                 {
                     string[] temp = ObjectMapGroup[a].Split(',');
@@ -85,11 +85,13 @@ namespace inpsGE
                         {
                             Objects.Add(new GameObject(
                                 Index,
+                                ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index],
                                 Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"),
                                 Core.TILE_SIZE * b,
                                 Core.TILE_SIZE * a,
                                 ObjectImages[Index].Contains("!"),
-                                RoomID
+                                RoomID,
+                                FloorIndex
                             ));
                         }
                     }

@@ -26,11 +26,6 @@ namespace inpsGE
             this.Speed = Speed;
         }
 
-        public void ResetRoomID()
-        {
-            CurrentRoomID = "0";
-        }
-
         public void Update()
         {
             Up = Input.Up;
@@ -43,7 +38,7 @@ namespace inpsGE
             bool DL = Down && Left;
             bool DR = Down && Right;
 
-            CheckRoomID(this, Core.GetCurrentGameMap().GetTiles());
+            CheckRoomAndFloor(this, Core.GetCurrentGameMap().GetTiles(), Core.GetCurrentGameMap().GetObjects());
             CheckTileCollision(this, Core.GetCurrentGameMap().GetTiles());
             CheckObjectCollision(this, Core.GetCurrentGameMap().GetObjects());
             NearestGameObjectToPlayer = NearestGameObject(this, Core.GetCurrentGameMap().GetObjects());

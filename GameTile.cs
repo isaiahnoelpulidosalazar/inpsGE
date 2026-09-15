@@ -11,9 +11,10 @@ namespace inpsGE
         float PositionX, PositionY;
         Rectangle Bounds;
         List<string> RoomID;
+        int Floor;
         bool IsTileSolid;
 
-        public GameTile(Texture2D Image, float PositionX, float PositionY, bool IsTileSolid, List<string> RoomID)
+        public GameTile(Texture2D Image, float PositionX, float PositionY, bool IsTileSolid, List<string> RoomID, int Floor)
         {
             this.Image = Image;
             this.PositionX = PositionX;
@@ -21,11 +22,17 @@ namespace inpsGE
             Bounds = new Rectangle((int)Math.Round(PositionX), (int)Math.Round(PositionY), Core.TILE_SIZE, Core.TILE_SIZE);
             this.IsTileSolid = IsTileSolid;
             this.RoomID = RoomID;
+            this.Floor = Floor;
         }
 
         public Texture2D GetImage()
         {
             return Image;
+        }
+
+        public int GetFloor()
+        {
+            return Floor;
         }
 
         public float GetPositionX()

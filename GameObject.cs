@@ -8,29 +8,43 @@ namespace inpsGE
     public class GameObject
     {
         int Index;
+        string Name = string.Empty;
         Texture2D Image;
         float PositionX, PositionY;
         Rectangle Bounds;
         List<string> RoomID;
+        int Floor;
         bool IsObjectSolid;
         Action Event;
         int LightLevel = 0;
         bool IsPlayerNearMe = false;
 
-        public GameObject(int Index, Texture2D Image, float PositionX, float PositionY, bool IsObjectSolid, List<string> RoomID)
+        public GameObject(int Index, string Name, Texture2D Image, float PositionX, float PositionY, bool IsObjectSolid, List<string> RoomID, int Floor)
         {
             this.Index = Index;
+            this.Name = Name;
             this.Image = Image;
             this.PositionX = PositionX;
             this.PositionY = PositionY;
             Bounds = new Rectangle((int)Math.Round(PositionX), (int)Math.Round(PositionY), Core.TILE_SIZE, Core.TILE_SIZE);
             this.IsObjectSolid = IsObjectSolid;
             this.RoomID = RoomID;
+            this.Floor = Floor;
+        }
+
+        public string GetName()
+        {
+            return Name;
         }
 
         public int GetIndex()
         {
             return Index;
+        }
+
+        public int GetFloor()
+        {
+            return Floor;
         }
 
         public void SetImage(string FilePath)

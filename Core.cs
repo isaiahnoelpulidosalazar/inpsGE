@@ -112,12 +112,7 @@ namespace inpsGE
             for (int a = 0; a < CurrentGameMap.GetTiles().Count; a++)
             {
                 GameTile Tile = CurrentGameMap.GetTiles()[a];
-                
-                if (Tile.GetRoomID().Count <= 0)
-                {
-                    _spriteBatch.Draw(Tile.GetImage(), new Vector2(Tile.GetPositionX(), Tile.GetPositionY()), Color.White);
-                }
-                else
+                if (Tile.GetFloor() == Entity.CurrentFloor)
                 {
                     if (Tile.GetRoomID().Contains(Entity.CurrentRoomID))
                     {
@@ -129,12 +124,7 @@ namespace inpsGE
             for (int a = 0; a < CurrentGameMap.GetObjects().Count; a++)
             {
                 GameObject Object = CurrentGameMap.GetObjects()[a];
-                
-                if (Object.GetRoomID().Count <= 0)
-                {
-                    _spriteBatch.Draw(Object.GetImage(), new Vector2(Object.GetPositionX(), Object.GetPositionY()), Color.White);
-                }
-                else
+                if (Object.GetFloor() == Entity.CurrentFloor)
                 {
                     if (Object.GetRoomID().Contains(Entity.CurrentRoomID))
                     {

@@ -26,6 +26,11 @@ namespace inpsGE
             this.Speed = Speed;
         }
 
+        public void ResetRoomID()
+        {
+            CurrentRoomID = 0;
+        }
+
         public void Update()
         {
             Up = Input.Up;
@@ -99,7 +104,7 @@ namespace inpsGE
             }
 
             Bounds = new Rectangle((int)PositionX + 4, (int)PositionY + 24, 24, 8);
-            InteractionArea = new Rectangle((int)PositionX - 1, (int)PositionY - 1, Core.TILE_SIZE + 2, Core.TILE_SIZE + 2);
+            InteractionArea = new Rectangle((int)PositionX - 2, (int)PositionY - 2, Core.TILE_SIZE + 4, Core.TILE_SIZE + 4);
         }
 
         public void Draw(ContentManager Content, SpriteBatch _spriteBatch)

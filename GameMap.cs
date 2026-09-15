@@ -46,53 +46,26 @@ namespace inpsGE
                     }
                 }
             }
-            int PreviousIndex = -1;
             for (int a = 0; a < ObjectMap.Length; a++)
             {
                 string[] temp = ObjectMap[a].Split(',');
 
                 for (int b = 0; b < temp.Length; b++)
                 {
-                    string RawTile = temp[b];
-                    int Index = Convert.ToInt32(RawTile.Split('[')[0]) - 1;
-                    List<int> RoomID = GetRoomID(RawTile);
+                    string RawObject = temp[b];
+                    int Index = Convert.ToInt32(RawObject.Split('[')[0]) - 1;
+                    List<int> RoomID = GetRoomID(RawObject);
 
                     if (Index >= 0)
                     {
-                        if (Objects.Count <= 0)
-                        {
-                            Objects.Add(new GameObject(
-                                Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"),
-                                Core.TILE_SIZE * b,
-                                Core.TILE_SIZE * a,
-                                ObjectImages[Index].Contains("!"),
-                                RoomID
-                            ));
-                        }
-                        else
-                        {
-                            if (Index > PreviousIndex)
-                            {
-                                Objects.Add(new GameObject(
-                                    Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"),
-                                    Core.TILE_SIZE * b,
-                                    Core.TILE_SIZE * a,
-                                    ObjectImages[Index].Contains("!"),
-                                    RoomID
-                                ));
-                            }
-                            else
-                            {
-                                Objects.Insert(0, new GameObject(
-                                    Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"),
-                                    Core.TILE_SIZE * b,
-                                    Core.TILE_SIZE * a,
-                                    ObjectImages[Index].Contains("!"),
-                                    RoomID
-                                ));
-                            }
-                        }
-                        PreviousIndex = Index;
+                        Objects.Add(new GameObject(
+                            Index,
+                            Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"),
+                            Core.TILE_SIZE * b,
+                            Core.TILE_SIZE * a,
+                            ObjectImages[Index].Contains("!"),
+                            RoomID
+                        ));
                     }
                 }
             }

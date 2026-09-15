@@ -112,18 +112,34 @@ namespace inpsGE
             for (int a = 0; a < CurrentGameMap.GetTiles().Count; a++)
             {
                 GameTile Tile = CurrentGameMap.GetTiles()[a];
-                if (Tile.GetRoomID().Contains(Entity.CurrentRoomID))
+                
+                if (Tile.GetRoomID().Count <= 0)
                 {
                     _spriteBatch.Draw(Tile.GetImage(), new Vector2(Tile.GetPositionX(), Tile.GetPositionY()), Color.White);
+                }
+                else
+                {
+                    if (Tile.GetRoomID().Contains(Entity.CurrentRoomID))
+                    {
+                        _spriteBatch.Draw(Tile.GetImage(), new Vector2(Tile.GetPositionX(), Tile.GetPositionY()), Color.White);
+                    }
                 }
             }
 
             for (int a = 0; a < CurrentGameMap.GetObjects().Count; a++)
             {
                 GameObject Object = CurrentGameMap.GetObjects()[a];
-                if (Object.GetRoomID().Contains(Entity.CurrentRoomID))
+                
+                if (Object.GetRoomID().Count <= 0)
                 {
                     _spriteBatch.Draw(Object.GetImage(), new Vector2(Object.GetPositionX(), Object.GetPositionY()), Color.White);
+                }
+                else
+                {
+                    if (Object.GetRoomID().Contains(Entity.CurrentRoomID))
+                    {
+                        _spriteBatch.Draw(Object.GetImage(), new Vector2(Object.GetPositionX(), Object.GetPositionY()), Color.White);
+                    }
                 }
             }
         }
@@ -158,12 +174,26 @@ namespace inpsGE
 
         public static GameObject GetGameObject(int Index)
         {
-            return CurrentGameMap.GetObjects()[Index];
+            foreach (GameObject Object in CurrentGameMap.GetObjects())
+            {
+                if (Object.GetIndex() == Index)
+                {
+                    return Object;
+                }
+            }
+            return null;
         }
 
         public static void DestroyGameObject(int Index)
         {
-            CurrentGameMap.RemoveObject(Index);
+            foreach (GameObject Object in CurrentGameMap.GetObjects())
+            {
+                if (Object.GetIndex() == Index)
+                {
+                    CurrentGameMap.RemoveObject(Object);
+                    break;
+                }
+            }
         }
 
         public static void AddGlobalGameTimer(GameTimer GameTimer)
@@ -195,12 +225,26 @@ namespace inpsGE
 
         public static void SetGameObjectLightLevel(int Index, int LightLevel)
         {
-            CurrentGameMap.GetObjects()[Index].SetLightLevel(LightLevel);
+            foreach (GameObject Object in CurrentGameMap.GetObjects())
+            {
+                if (Object.GetIndex() == Index)
+                {
+                    Object.SetLightLevel(LightLevel);
+                    break;
+                }
+            }
         }
 
         public static void SetGameObjectEvent(int Index, Action Event)
         {
-            CurrentGameMap.GetObjects()[Index].SetEvent(Event);
+            foreach (GameObject Object in CurrentGameMap.GetObjects())
+            {
+                if (Object.GetIndex() == Index)
+                {
+                    Object.SetEvent(Event);
+                    break;
+                }
+            }
         }
 
         public static void SetAllGameObjectsLightLevel(int LightLevel)

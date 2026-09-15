@@ -11,7 +11,7 @@ namespace inpsGE
         public float PositionX, PositionY, Speed;
         public Rectangle Bounds, InteractionArea;
         public bool Up, Down, Left, Right;
-        public int CurrentRoomID;
+        public string CurrentRoomID;
 
         public void SetImage(Texture2D Image)
         {
@@ -34,11 +34,7 @@ namespace inpsGE
             {
                 if (Tile.GetBounds().Intersects(Entity.Bounds))
                 {
-                    int Room = Tile.GetRoomID().Find(ID => Tile.GetRoomID().Count == 1);
-                    if (Room != 0)
-                    {
-                        CurrentRoomID = Room;
-                    }
+                    CurrentRoomID = Tile.GetRoomID()[0];
                     break;
                 }
             }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -25,55 +26,80 @@ namespace inpsGE
             string[] TileImages = File.ReadAllLines("Content\\Maps\\" + Name + ".igetilemap");
             string[] ObjectImages = File.ReadAllLines("Content\\Maps\\" + Name + ".igeobjectmap");
 
-            for (int a = 0; a < TileMap.Length; a++)
-            {
-                string[] temp = TileMap[a].Split(',');
-                for (int b = 0; b < temp.Length; b++)
-                {
-                    string RawTile = temp[b];
-                    int Index = Convert.ToInt32(RawTile.Split('[')[0]) - 1;
-                    List<int> RoomID = GetRoomID(RawTile);
+            int TileGroupIndex = 0;
+            var TileResultGroups = TileMap
+                .Select(Line => new { NewLine = Line, Group = Line == "+" ? ++TileGroupIndex : TileGroupIndex })
+                .Where(X => X.NewLine != "+")
+                .GroupBy(X => X.Group)
+                .Select(Group => Group.Select(X => X.NewLine).ToArray())
+                .ToList();
 
-                    if (Index >= 0)
+            int ObjectGroupIndex = 0;
+            var ObjectResultGroups = ObjectMap
+                .Select(Line => new { NewLine = Line, Group = Line == "+" ? ++ObjectGroupIndex : ObjectGroupIndex })
+                .Where(X => X.NewLine != "+")
+                .GroupBy(X => X.Group)
+                .Select(Group => Group.Select(X => X.NewLine).ToArray())
+                .ToList();
+
+            Debug.WriteLine(TileResultGroups.Count);
+
+            foreach (string[] TileMapGroup in TileResultGroups)
+            {
+                for (int a = 0; a < TileMapGroup.Length; a++)
+                {
+                    string[] temp = TileMapGroup[a].Split(',');
+                    for (int b = 0; b < temp.Length; b++)
                     {
-                        Tiles.Add(new GameTile(
-                            Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Tiles\\" + (TileImages[Index].Contains("!") ? TileImages[Index].Substring(0, TileImages[Index].Length - 1) : TileImages[Index]) + ".png"),
-                            Core.TILE_SIZE * b,
-                            Core.TILE_SIZE * a,
-                            TileImages[Index].Contains("!"),
-                            RoomID
-                        ));
+                        string RawTile = temp[b];
+                        int Index = Convert.ToInt32(RawTile.Split('[')[0]) - 1;
+                        List<string> RoomID = GetRoomID(RawTile);
+
+                        if (Index >= 0)
+                        {
+                            Tiles.Add(new GameTile(
+                                Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Tiles\\" + (TileImages[Index].Contains("!") ? TileImages[Index].Substring(0, TileImages[Index].Length - 1) : TileImages[Index]) + ".png"),
+                                Core.TILE_SIZE * b,
+                                Core.TILE_SIZE * a,
+                                TileImages[Index].Contains("!"),
+                                RoomID
+                            ));
+                        }
                     }
                 }
             }
-            for (int a = 0; a < ObjectMap.Length; a++)
+
+            foreach (string[] ObjectMapGroup in ObjectResultGroups)
             {
-                string[] temp = ObjectMap[a].Split(',');
-
-                for (int b = 0; b < temp.Length; b++)
+                for (int a = 0; a < ObjectMapGroup.Length; a++)
                 {
-                    string RawObject = temp[b];
-                    int Index = Convert.ToInt32(RawObject.Split('[')[0]) - 1;
-                    List<int> RoomID = GetRoomID(RawObject);
+                    string[] temp = ObjectMapGroup[a].Split(',');
 
-                    if (Index >= 0)
+                    for (int b = 0; b < temp.Length; b++)
                     {
-                        Objects.Add(new GameObject(
-                            Index,
-                            Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"),
-                            Core.TILE_SIZE * b,
-                            Core.TILE_SIZE * a,
-                            ObjectImages[Index].Contains("!"),
-                            RoomID
-                        ));
+                        string RawObject = temp[b];
+                        int Index = Convert.ToInt32(RawObject.Split('[')[0]) - 1;
+                        List<string> RoomID = GetRoomID(RawObject);
+
+                        if (Index >= 0)
+                        {
+                            Objects.Add(new GameObject(
+                                Index,
+                                Texture2D.FromFile(Core.GetGraphicsDevice(), "Content\\Objects\\" + (ObjectImages[Index].Contains("!") ? ObjectImages[Index].Substring(0, ObjectImages[Index].Length - 1) : ObjectImages[Index]) + ".png"),
+                                Core.TILE_SIZE * b,
+                                Core.TILE_SIZE * a,
+                                ObjectImages[Index].Contains("!"),
+                                RoomID
+                            ));
+                        }
                     }
                 }
             }
         }
 
-        List<int> GetRoomID(string Index)
+        List<string> GetRoomID(string Index)
         {
-            List<int> temp = new List<int>();
+            List<string> temp = new List<string>();
 
             if (!Index.Contains("["))
             {
@@ -87,12 +113,12 @@ namespace inpsGE
                 string[] Parts = ID.Split('-');
                 foreach (string Part in Parts)
                 {
-                    temp.Add(Convert.ToInt32(Part));
+                    temp.Add(Part);
                 }
             }
             else
             {
-                temp.Add(Convert.ToInt32(ID));
+                temp.Add(ID);
             }
 
             return temp;

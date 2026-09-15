@@ -11,13 +11,13 @@ namespace inpsGE
         Texture2D Image;
         float PositionX, PositionY;
         Rectangle Bounds;
-        List<int> RoomID;
+        List<string> RoomID;
         bool IsObjectSolid;
         Action Event;
         int LightLevel = 0;
         bool IsPlayerNearMe = false;
 
-        public GameObject(int Index, Texture2D Image, float PositionX, float PositionY, bool IsObjectSolid, List<int> RoomID)
+        public GameObject(int Index, Texture2D Image, float PositionX, float PositionY, bool IsObjectSolid, List<string> RoomID)
         {
             this.Index = Index;
             this.Image = Image;
@@ -63,7 +63,7 @@ namespace inpsGE
             return Bounds;
         }
 
-        public List<int> GetRoomID()
+        public List<string> GetRoomID()
         {
             return RoomID;
         }

@@ -28,7 +28,7 @@ namespace inpsGE
 
         public void ResetRoomID()
         {
-            CurrentRoomID = 0;
+            CurrentRoomID = "0";
         }
 
         public void Update()
